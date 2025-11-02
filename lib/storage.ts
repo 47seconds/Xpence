@@ -9,6 +9,7 @@ export type Transaction = {
 };
 
 const STORAGE_KEY = 'expenses_transactions';
+const THEME_KEY = 'app_theme_preference';
 
 export const storage = {
   async getTransactions(): Promise<Transaction[]> {
@@ -46,6 +47,25 @@ export const storage = {
     } catch (error) {
       console.error('Error deleting transaction:', error);
       throw error;
+    }
+  },
+
+  // Theme persistence methods
+  async getThemePreference(): Promise<boolean> {
+    try {
+      const theme = await AsyncStorage.getItem(THEME_KEY);
+      return theme === 'dark';
+    } catch (error) {
+      console.error('Error reading theme preference:', error);
+      return false; // Default to light theme
+    }
+  },
+
+  async setThemePreference(isDark: boolean): Promise<void> {
+    try {
+      await AsyncStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+    } catch (error) {
+      console.error('Error saving theme preference:', error);
     }
   },
 };

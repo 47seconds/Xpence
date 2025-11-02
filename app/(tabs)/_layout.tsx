@@ -1,13 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tabs } from 'expo-router';
 import { Home, History } from 'lucide-react-native';
 import { ThemeContext } from '@/hooks/useTheme';
+import { storage } from '@/lib/storage';
 
 export default function TabLayout() {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
 
-  const toggleTheme = () => {
-    setIsDarkTheme(!isDarkTheme);
+  useEffect(() => {
+    // Load saved theme preference on app start
+    const loadTheme = async () => {
+      const savedTheme = await storage.getThemePreference();
+      setIsDarkTheme(savedTheme);
+    };
+    loadTheme();
+  }, []);
+
+  const toggleTheme = async () => {
+    const newTheme = !isDarkTheme;
+    setIsDarkTheme(newTheme);
+    // Save theme preference
+    await storage.setThemePreference(newTheme);
   };
 
   return (
