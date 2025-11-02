@@ -11,16 +11,17 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import { Plus, TrendingUp, TrendingDown } from 'lucide-react-native';
+import { Plus, TrendingUp, TrendingDown, Moon, Sun } from 'lucide-react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { storage, Transaction } from '@/lib/storage';
+import { useTheme } from '@/hooks/useTheme';
 
 const { width, height } = Dimensions.get('window');
 
 const quotes = [
   "All Roads Lead to Rome",
-  "Once a spectator, always a spectator",
-  "Omniscience is equal to omnipotence",
+  "Once a spectator,\n always a spectator",
+  "Omniscience is\n equal to omnipotence",
 ];
 
 export default function HomeTab() {
@@ -33,6 +34,7 @@ export default function HomeTab() {
   const [submitting, setSubmitting] = useState(false);
   const [quote, setQuote] = useState('');
   const quoteInitialized = useRef(false);
+  const { isDarkTheme, toggleTheme } = useTheme();
 
   useEffect(() => {
     if (!quoteInitialized.current) {
@@ -107,19 +109,31 @@ export default function HomeTab() {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
+    <ScrollView style={[styles.container, isDarkTheme && styles.containerDark]} contentContainerStyle={styles.scrollContent}>
       {/* Background Gradient Effect */}
       <View style={styles.backgroundGradient} />
       
+      {/* Theme Toggle Button */}
+      <TouchableOpacity
+        style={styles.themeToggle}
+        onPress={toggleTheme}
+        activeOpacity={0.7}>
+        {isDarkTheme ? (
+          <Sun size={20} color={isDarkTheme ? '#fbbf24' : '#6b7280'} />
+        ) : (
+          <Moon size={20} color={isDarkTheme ? '#fbbf24' : '#6b7280'} />
+        )}
+      </TouchableOpacity>
+      
       {/* Quote Header */}
       <View style={styles.quoteContainer}>
-        <Text style={styles.quoteText}>{quote}</Text>
+        <Text style={[styles.quoteText, isDarkTheme && styles.quoteTextDark]}>{quote}</Text>
       </View>
 
       {/* Balance Card */}
-      <View style={styles.balanceCard}>
+      <View style={[styles.balanceCard, isDarkTheme && styles.balanceCardDark]}>
         <View style={styles.balanceHeader}>
-          <Text style={styles.balanceLabel}>Current Balance</Text>
+          <Text style={[styles.balanceLabel, isDarkTheme && styles.balanceLabelDark]}>Current Balance</Text>
         </View>
         <Text
           style={[
@@ -248,6 +262,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f8fafc',
   },
+  containerDark: {
+    backgroundColor: '#0f172a',
+  },
   scrollContent: {
     flexGrow: 1,
     paddingBottom: 40,
@@ -260,6 +277,23 @@ const styles = StyleSheet.create({
     height: height * 0.4,
     backgroundColor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     opacity: 0.05,
+  },
+  themeToggle: {
+    position: 'absolute',
+    top: 60,
+    right: 24,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    zIndex: 10,
   },
   quoteContainer: {
     paddingTop: 80,
@@ -277,6 +311,9 @@ const styles = StyleSheet.create({
     fontFamily: 'serif',
     fontStyle: 'italic',
   },
+  quoteTextDark: {
+    color: '#e5e7eb',
+  },
   balanceCard: {
     backgroundColor: '#ffffff',
     marginHorizontal: 20,
@@ -290,6 +327,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#f1f5f9',
   },
+  balanceCardDark: {
+    backgroundColor: '#1e293b',
+    borderColor: '#334155',
+  },
   balanceHeader: {
     alignItems: 'center',
     marginBottom: 16,
@@ -301,6 +342,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     textAlign: 'center',
     fontFamily: 'monospace',
+  },
+  balanceLabelDark: {
+    color: '#9ca3af',
   },
   balanceAmount: {
     fontSize: 48,

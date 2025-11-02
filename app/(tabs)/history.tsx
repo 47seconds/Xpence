@@ -12,11 +12,13 @@ import {
 import { ArrowUpCircle, ArrowDownCircle, Trash2 } from 'lucide-react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { storage, Transaction } from '@/lib/storage';
+import { useTheme } from '@/hooks/useTheme';
 
 export default function HistoryTab() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const { isDarkTheme } = useTheme();
 
   useEffect(() => {
     loadTransactions();
@@ -99,7 +101,7 @@ export default function HistoryTab() {
   };
 
   const renderItem = ({ item }: { item: Transaction }) => (
-    <View style={styles.transactionItem}>
+    <View style={[styles.transactionItem, isDarkTheme && styles.transactionItemDark]}>
       <View
         style={[
           styles.iconContainer,
@@ -113,10 +115,10 @@ export default function HistoryTab() {
       </View>
 
       <View style={styles.transactionDetails}>
-        <Text style={styles.transactionNote}>
+        <Text style={[styles.transactionNote, isDarkTheme && styles.transactionNoteDark]}>
           {item.note || 'No description'}
         </Text>
-        <Text style={styles.transactionDate}>
+        <Text style={[styles.transactionDate, isDarkTheme && styles.transactionDateDark]}>
           {formatDate(item.created_at)} at {formatTime(item.created_at)}
         </Text>
       </View>
@@ -130,7 +132,7 @@ export default function HistoryTab() {
       </Text>
 
       <TouchableOpacity
-        style={styles.deleteButton}
+        style={[styles.deleteButton, isDarkTheme && styles.deleteButtonDark]}
         onPress={() => handleDelete(item.id)}>
         <Trash2 size={20} color="#ef4444" />
       </TouchableOpacity>
@@ -146,15 +148,15 @@ export default function HistoryTab() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Transaction History</Text>
+    <View style={[styles.container, isDarkTheme && styles.containerDark]}>
+      <View style={[styles.header, isDarkTheme && styles.headerDark]}>
+        <Text style={[styles.title, isDarkTheme && styles.titleDark]}>Transaction History</Text>
       </View>
 
       {transactions.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No transactions yet</Text>
-          <Text style={styles.emptySubtext}>
+          <Text style={[styles.emptyText, isDarkTheme && styles.emptyTextDark]}>No transactions yet</Text>
+          <Text style={[styles.emptySubtext, isDarkTheme && styles.emptySubtextDark]}>
             Add your first transaction to get started
           </Text>
         </View>
@@ -178,6 +180,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fafafa',
   },
+  containerDark: {
+    backgroundColor: '#0f172a',
+  },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -191,11 +196,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#e2e8f0',
   },
+  headerDark: {
+    backgroundColor: '#1e293b',
+    borderBottomColor: '#334155',
+  },
   title: {
     fontSize: 30,
     fontWeight: '800',
     color: '#0f172a',
     letterSpacing: -0.5,
+  },
+  titleDark: {
+    color: '#e5e7eb',
   },
   listContent: {
     padding: 18,
@@ -214,6 +226,10 @@ const styles = StyleSheet.create({
     elevation: 3,
     borderWidth: 1,
     borderColor: '#f1f5f9',
+  },
+  transactionItemDark: {
+    backgroundColor: '#1e293b',
+    borderColor: '#334155',
   },
   iconContainer: {
     width: 52,
@@ -238,9 +254,15 @@ const styles = StyleSheet.create({
     color: '#0f172a',
     marginBottom: 5,
   },
+  transactionNoteDark: {
+    color: '#e5e7eb',
+  },
   transactionDate: {
     fontSize: 13,
     color: '#64748b',
+  },
+  transactionDateDark: {
+    color: '#9ca3af',
   },
   transactionAmount: {
     fontSize: 18,
@@ -258,6 +280,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#fee2e2',
   },
+  deleteButtonDark: {
+    backgroundColor: '#450a0a',
+  },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -270,9 +295,15 @@ const styles = StyleSheet.create({
     color: '#64748b',
     marginBottom: 8,
   },
+  emptyTextDark: {
+    color: '#9ca3af',
+  },
   emptySubtext: {
     fontSize: 16,
     color: '#94a3b8',
     textAlign: 'center',
+  },
+  emptySubtextDark: {
+    color: '#6b7280',
   },
 });
