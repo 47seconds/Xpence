@@ -115,19 +115,7 @@ export default function HomeTab() {
         {/* Background Gradient Effect */}
         <View style={styles.backgroundGradient} />
         
-        {/* Theme Toggle Button */}
-        <TouchableOpacity
-          style={styles.themeToggle}
-          onPress={toggleTheme}
-          activeOpacity={0.7}>
-          {isDarkTheme ? (
-            <Sun size={20} color={isDarkTheme ? '#fbbf24' : '#6b7280'} />
-          ) : (
-            <Moon size={20} color={isDarkTheme ? '#fbbf24' : '#6b7280'} />
-          )}
-        </TouchableOpacity>
-      
-      {/* Quote Header */}
+        {/* Quote Header */}
       <View style={styles.quoteContainer}>
         <Text style={[styles.quoteText, isDarkTheme && styles.quoteTextDark]}>{quote}</Text>
       </View>
@@ -256,6 +244,20 @@ export default function HomeTab() {
         </View>
       </Modal>
       </ScrollView>
+      
+      {/* Enhanced Theme Toggle Button - Bottom Left */}
+      <TouchableOpacity
+        style={[styles.themeToggle, isDarkTheme && styles.themeToggleDark]}
+        onPress={toggleTheme}
+        activeOpacity={0.8}>
+        <View style={[styles.themeToggleInner, isDarkTheme && styles.themeToggleInnerDark]}>
+          {isDarkTheme ? (
+            <Sun size={20} color="#fbbf24" />
+          ) : (
+            <Moon size={20} color="#6366f1" />
+          )}
+        </View>
+      </TouchableOpacity>
     </SimpleSwipe>
   );
 }
@@ -283,20 +285,36 @@ const styles = StyleSheet.create({
   },
   themeToggle: {
     position: 'absolute',
-    top: 60,
-    right: 24,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    bottom: 30,
+    left: 24,
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    zIndex: 10,
+    shadowRadius: 6,
+    elevation: 4,
+    zIndex: 100,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.05)',
+  },
+  themeToggleDark: {
+    backgroundColor: 'rgba(30, 41, 59, 0.95)',
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  themeToggleInner: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  themeToggleInnerDark: {
+    backgroundColor: 'transparent',
   },
   quoteContainer: {
     paddingTop: 80,

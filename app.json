@@ -28,7 +28,7 @@
       "package": "com.x47seconds.xpence",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/xpence.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000000"
       },
       "splash": {
         "image": "./assets/images/xpence.png"
