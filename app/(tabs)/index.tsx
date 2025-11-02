@@ -15,6 +15,7 @@ import { Plus, TrendingUp, TrendingDown, Moon, Sun } from 'lucide-react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { storage, Transaction } from '@/lib/storage';
 import { useTheme } from '@/hooks/useTheme';
+import SwipeWrapper from '@/components/SwipeWrapper';
 
 const { width, height } = Dimensions.get('window');
 
@@ -109,21 +110,22 @@ export default function HomeTab() {
   }
 
   return (
-    <ScrollView style={[styles.container, isDarkTheme && styles.containerDark]} contentContainerStyle={styles.scrollContent}>
-      {/* Background Gradient Effect */}
-      <View style={styles.backgroundGradient} />
-      
-      {/* Theme Toggle Button */}
-      <TouchableOpacity
-        style={styles.themeToggle}
-        onPress={toggleTheme}
-        activeOpacity={0.7}>
-        {isDarkTheme ? (
-          <Sun size={20} color={isDarkTheme ? '#fbbf24' : '#6b7280'} />
-        ) : (
-          <Moon size={20} color={isDarkTheme ? '#fbbf24' : '#6b7280'} />
-        )}
-      </TouchableOpacity>
+    <SwipeWrapper currentTab="home">
+      <ScrollView style={[styles.container, isDarkTheme && styles.containerDark]} contentContainerStyle={styles.scrollContent}>
+        {/* Background Gradient Effect */}
+        <View style={styles.backgroundGradient} />
+        
+        {/* Theme Toggle Button */}
+        <TouchableOpacity
+          style={styles.themeToggle}
+          onPress={toggleTheme}
+          activeOpacity={0.7}>
+          {isDarkTheme ? (
+            <Sun size={20} color={isDarkTheme ? '#fbbf24' : '#6b7280'} />
+          ) : (
+            <Moon size={20} color={isDarkTheme ? '#fbbf24' : '#6b7280'} />
+          )}
+        </TouchableOpacity>
       
       {/* Quote Header */}
       <View style={styles.quoteContainer}>
@@ -254,6 +256,7 @@ export default function HomeTab() {
         </View>
       </Modal>
     </ScrollView>
+    </SwipeWrapper>
   );
 }
 

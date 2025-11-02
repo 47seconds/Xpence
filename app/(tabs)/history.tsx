@@ -13,6 +13,7 @@ import { ArrowUpCircle, ArrowDownCircle, Trash2 } from 'lucide-react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { storage, Transaction } from '@/lib/storage';
 import { useTheme } from '@/hooks/useTheme';
+import SwipeWrapper from '@/components/SwipeWrapper';
 
 export default function HistoryTab() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -148,30 +149,32 @@ export default function HistoryTab() {
   }
 
   return (
-    <View style={[styles.container, isDarkTheme && styles.containerDark]}>
-      <View style={[styles.header, isDarkTheme && styles.headerDark]}>
-        <Text style={[styles.title, isDarkTheme && styles.titleDark]}>Transaction History</Text>
-      </View>
-
-      {transactions.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Text style={[styles.emptyText, isDarkTheme && styles.emptyTextDark]}>No transactions yet</Text>
-          <Text style={[styles.emptySubtext, isDarkTheme && styles.emptySubtextDark]}>
-            Add your first transaction to get started
-          </Text>
+    <SwipeWrapper currentTab="history">
+      <View style={[styles.container, isDarkTheme && styles.containerDark]}>
+        <View style={[styles.header, isDarkTheme && styles.headerDark]}>
+          <Text style={[styles.title, isDarkTheme && styles.titleDark]}>Transaction History</Text>
         </View>
-      ) : (
-        <FlatList
-          data={transactions}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContent}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        />
-      )}
-    </View>
+
+        {transactions.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={[styles.emptyText, isDarkTheme && styles.emptyTextDark]}>No transactions yet</Text>
+            <Text style={[styles.emptySubtext, isDarkTheme && styles.emptySubtextDark]}>
+              Add your first transaction to get started
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={transactions}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.listContent}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          />
+        )}
+      </View>
+    </SwipeWrapper>
   );
 }
 
