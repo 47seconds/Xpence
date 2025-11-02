@@ -142,20 +142,22 @@ export default function SimpleSwipe({ children, currentTab }: SimpleSwipeProps) 
         {children}
       </Animated.View>
       
-      {/* Overlay next screen preview during swipe - consistent theme color */}
+      {/* Overlay next screen preview during swipe - slide in from side */}
       <Animated.View
         style={{
           position: 'absolute',
           top: 0,
           left: 0,
-          right: 0,
-          bottom: 0,
+          width: SCREEN_WIDTH,
+          height: '100%',
           backgroundColor: getDestinationColor(),
-          opacity: translateX.interpolate({
-            inputRange: currentTab === 'home' ? [-SCREEN_WIDTH, -20, 0] : [0, 20, SCREEN_WIDTH],
-            outputRange: currentTab === 'home' ? [1, 0, 0] : [0, 0, 1],
-            extrapolate: 'clamp',
-          }),
+          transform: [{
+            translateX: translateX.interpolate({
+              inputRange: currentTab === 'home' ? [-SCREEN_WIDTH, 0] : [0, SCREEN_WIDTH],
+              outputRange: currentTab === 'home' ? [0, SCREEN_WIDTH] : [-SCREEN_WIDTH, 0],
+              extrapolate: 'clamp',
+            })
+          }],
         }}
         pointerEvents="none"
       />
