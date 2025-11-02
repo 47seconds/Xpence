@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { View, PanResponder, Dimensions, Animated } from 'react-native';
 import { router } from 'expo-router';
 
@@ -8,123 +8,144 @@ interface SimpleSwipeProps {
 }
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const SWIPE_THRESHOLD = SCREEN_WIDTH * 0.25;
+const SWIPE_THRESHOLD = SCREEN_WIDTH * 0.3;
 
 export default function SimpleSwipe({ children, currentTab }: SimpleSwipeProps) {
   const translateX = useRef(new Animated.Value(0)).current;
-  const scale = useRef(new Animated.Value(1)).current;
-  const opacity = useRef(new Animated.Value(1)).current;
+  const [isNavigating, setIsNavigating] = useState(false);
 
-  // Reset animation values when component mounts or tab changes
+  // Reset animation when tab changes
   useEffect(() => {
-    translateX.setValue(0);
-    scale.setValue(1);
-    opacity.setValue(1);
-  }, [currentTab]);
-
-  const resetAnimations = () => {
-    translateX.setValue(0);
-    scale.setValue(1);
-    opacity.setValue(1);
-  };
+    if (!isNavigating) {
+      translateX.setValue(0);
+    }
+  }, [currentTab, isNavigating]);
 
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (evt, gestureState) => {
-        // Only respond to horizontal swipes
-        return Math.abs(gestureState.dx) > Math.abs(gestureState.dy) && Math.abs(gestureState.dx) > 20;
+        // Only respond to horizontal swipes and when not currently navigating
+        return !isNavigating && 
+               Math.abs(gestureState.dx) > Math.abs(gestureState.dy) && 
+               Math.abs(gestureState.dx) > 10;
       },
       onPanResponderGrant: () => {
-        // Reset any previous animations when gesture starts
-        resetAnimations();
+        // Stop any ongoing animations
+        translateX.stopAnimation();
       },
       onPanResponderMove: (evt, gestureState) => {
         const { dx } = gestureState;
         
-        // Only allow meaningful swipe directions
+        // Allow continuous movement in valid directions
         if (currentTab === 'home' && dx < 0) {
-          // Swiping left from home (to history)
-          translateX.setValue(dx);
+          // Swiping left from home (toward history)
+          // Limit the movement to screen width
+          const limitedDx = Math.max(dx, -SCREEN_WIDTH);
+          translateX.setValue(limitedDx);
         } else if (currentTab === 'history' && dx > 0) {
-          // Swiping right from history (to home)
-          translateX.setValue(dx);
-        } else {
-          // Invalid swipe direction, reset
-          translateX.setValue(0);
-          return;
+          // Swiping right from history (toward home)
+          // Limit the movement to screen width
+          const limitedDx = Math.min(dx, SCREEN_WIDTH);
+          translateX.setValue(limitedDx);
+        } else if (Math.abs(dx) < 50) {
+          // Allow small movements in wrong direction for natural feel
+          translateX.setValue(dx * 0.3);
         }
-        
-        // Calculate progress for effects
-        const progress = Math.abs(dx) / SWIPE_THRESHOLD;
-        const clampedProgress = Math.min(progress, 1);
-        
-        // Scale effect - slightly shrink during swipe
-        const scaleValue = 1 - (clampedProgress * 0.05); // Scale down by max 5%
-        scale.setValue(scaleValue);
-        
-        // Opacity effect
-        const opacityValue = 1 - (clampedProgress * 0.3); // Fade by max 30%
-        opacity.setValue(opacityValue);
       },
       onPanResponderRelease: (evt, gestureState) => {
-        const { dx } = gestureState;
-        const shouldNavigate = Math.abs(dx) > SWIPE_THRESHOLD;
+        const { dx, vx } = gestureState;
         
-        if (shouldNavigate) {
-          // Complete navigation immediately and reset
-          if (currentTab === 'home' && dx < -SWIPE_THRESHOLD) {
-            resetAnimations();
-            router.push('/history');
-          } else if (currentTab === 'history' && dx > SWIPE_THRESHOLD) {
-            resetAnimations();
-            router.push('/');
-          }
-        } else {
-          // Snap back to original position with bounce
-          Animated.parallel([
+        // Consider both distance and velocity for navigation decision
+        const shouldNavigate = Math.abs(dx) > SWIPE_THRESHOLD || Math.abs(vx) > 0.5;
+        
+        if (shouldNavigate && !isNavigating) {
+          setIsNavigating(true);
+          
+          if (currentTab === 'home' && dx < 0) {
+            // Complete swipe to history
+            Animated.timing(translateX, {
+              toValue: -SCREEN_WIDTH,
+              duration: 250,
+              useNativeDriver: true,
+            }).start(() => {
+              setIsNavigating(false);
+              router.push('/history');
+            });
+          } else if (currentTab === 'history' && dx > 0) {
+            // Complete swipe to home
+            Animated.timing(translateX, {
+              toValue: SCREEN_WIDTH,
+              duration: 250,
+              useNativeDriver: true,
+            }).start(() => {
+              setIsNavigating(false);
+              router.push('/');
+            });
+          } else {
+            // Snap back
+            setIsNavigating(false);
             Animated.spring(translateX, {
               toValue: 0,
               useNativeDriver: true,
               tension: 200,
-              friction: 7,
-            }),
-            Animated.spring(scale, {
-              toValue: 1,
-              useNativeDriver: true,
-              tension: 200,
-              friction: 7,
-            }),
-            Animated.spring(opacity, {
-              toValue: 1,
-              useNativeDriver: true,
-              tension: 200,
-              friction: 7,
-            }),
-          ]).start();
+              friction: 20,
+            }).start();
+          }
+        } else {
+          // Snap back to original position
+          Animated.spring(translateX, {
+            toValue: 0,
+            useNativeDriver: true,
+            tension: 200,
+            friction: 20,
+          }).start();
         }
       },
       onPanResponderTerminate: () => {
-        // Reset if gesture is terminated
-        resetAnimations();
+        // Reset on termination
+        if (!isNavigating) {
+          Animated.spring(translateX, {
+            toValue: 0,
+            useNativeDriver: true,
+            tension: 200,
+            friction: 20,
+          }).start();
+        }
       },
     })
   ).current;
 
   return (
-    <Animated.View 
-      style={[
-        { flex: 1 },
-        {
-          transform: [
-            { translateX: translateX },
-            { scale: scale }
-          ],
-          opacity: opacity,
-        }
-      ]} 
-      {...panResponder.panHandlers}
-    >
-      {children}
-    </Animated.View>
+    <View style={{ flex: 1 }}>
+      <Animated.View 
+        style={[
+          { 
+            flex: 1,
+            transform: [{ translateX: translateX }]
+          }
+        ]} 
+        {...panResponder.panHandlers}
+      >
+        {children}
+      </Animated.View>
+      
+      {/* Overlay next screen preview during swipe */}
+      <Animated.View
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: currentTab === 'home' ? '#1e293b' : '#f8fafc',
+          opacity: translateX.interpolate({
+            inputRange: currentTab === 'home' ? [-SCREEN_WIDTH, 0] : [0, SCREEN_WIDTH],
+            outputRange: [0.3, 0],
+            extrapolate: 'clamp',
+          }),
+        }}
+        pointerEvents="none"
+      />
+    </View>
   );
 }
