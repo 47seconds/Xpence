@@ -154,7 +154,7 @@ export default function HomeTab() {
 
       {/* Footer */}
       <View style={styles.footer}>
-        <Text style={styles.footerText}>made with ❤️ by 47seconds</Text>
+        <Text style={[styles.footerText, isDarkTheme && styles.footerTextDark]}>made with ❤️ by 47seconds</Text>
       </View>
 
       <Modal
@@ -163,10 +163,10 @@ export default function HomeTab() {
         transparent={true}
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+          <View style={[styles.modalContent, isDarkTheme && styles.modalContentDark]}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>New Transaction</Text>
-              <Text style={styles.modalSubtitle}>Add your income or expense</Text>
+              <Text style={[styles.modalTitle, isDarkTheme && styles.modalTitleDark]}>New Transaction</Text>
+              <Text style={[styles.modalSubtitle, isDarkTheme && styles.modalSubtitleDark]}>Add your income or expense</Text>
             </View>
 
             <View style={styles.typeContainer}>
@@ -205,26 +205,26 @@ export default function HomeTab() {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Amount</Text>
+              <Text style={[styles.inputLabel, isDarkTheme && styles.inputLabelDark]}>Amount</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, isDarkTheme && styles.inputDark]}
                 placeholder="0.00"
                 keyboardType="numeric"
                 value={amount}
                 onChangeText={setAmount}
-                placeholderTextColor="#9ca3af"
+                placeholderTextColor={isDarkTheme ? "#6b7280" : "#9ca3af"}
               />
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Description</Text>
+              <Text style={[styles.inputLabel, isDarkTheme && styles.inputLabelDark]}>Description</Text>
               <TextInput
-                style={[styles.input, styles.noteInput]}
+                style={[styles.input, styles.noteInput, isDarkTheme && styles.inputDark]}
                 placeholder="What was this for?"
                 value={note}
                 onChangeText={setNote}
                 multiline
-                placeholderTextColor="#9ca3af"
+                placeholderTextColor={isDarkTheme ? "#6b7280" : "#9ca3af"}
               />
             </View>
 
@@ -385,6 +385,9 @@ const styles = StyleSheet.create({
     color: '#9ca3af',
     fontWeight: '500',
   },
+  footerTextDark: {
+    color: '#6b7280',
+  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
@@ -404,6 +407,9 @@ const styles = StyleSheet.create({
     shadowRadius: 24,
     elevation: 20,
   },
+  modalContentDark: {
+    backgroundColor: '#1e293b',
+  },
   modalHeader: {
     alignItems: 'center',
     marginBottom: 32,
@@ -415,11 +421,17 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontFamily: 'sans-serif',
   },
+  modalTitleDark: {
+    color: '#e5e7eb',
+  },
   modalSubtitle: {
     fontSize: 16,
     color: '#6b7280',
     fontWeight: '500',
     fontFamily: 'sans-serif',
+  },
+  modalSubtitleDark: {
+    color: '#9ca3af',
   },
   typeContainer: {
     flexDirection: 'row',
@@ -460,6 +472,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 8,
   },
+  inputLabelDark: {
+    color: '#e5e7eb',
+  },
   input: {
     borderWidth: 2,
     borderColor: '#e5e7eb',
@@ -469,6 +484,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9fafb',
     color: '#1f2937',
     fontWeight: '500',
+  },
+  inputDark: {
+    backgroundColor: '#374151',
+    borderColor: '#4b5563',
+    color: '#e5e7eb',
   },
   noteInput: {
     height: 100,
