@@ -64,24 +64,26 @@ export default function SimpleSwipe({ children, currentTab }: SimpleSwipeProps) 
           setIsNavigating(true);
           
           if (currentTab === 'home' && dx < 0) {
-            // Complete swipe to history with animation
+            // Navigate immediately to prevent content flash
+            router.push('/history');
+            // Then animate out
             Animated.timing(translateX, {
               toValue: -SCREEN_WIDTH,
-              duration: 200,
+              duration: 150,
               useNativeDriver: true,
             }).start(() => {
               setIsNavigating(false);
-              router.push('/history');
             });
           } else if (currentTab === 'history' && dx > 0) {
-            // Complete swipe to home with animation
+            // Navigate immediately to prevent content flash
+            router.push('/');
+            // Then animate out
             Animated.timing(translateX, {
               toValue: SCREEN_WIDTH,
-              duration: 200,
+              duration: 150,
               useNativeDriver: true,
             }).start(() => {
               setIsNavigating(false);
-              router.push('/');
             });
           } else {
             // Snap back
@@ -140,7 +142,7 @@ export default function SimpleSwipe({ children, currentTab }: SimpleSwipeProps) 
         {children}
       </Animated.View>
       
-      {/* Overlay next screen preview during swipe - only show when actively swiping */}
+      {/* Overlay next screen preview during swipe - consistent theme color */}
       <Animated.View
         style={{
           position: 'absolute',
@@ -151,7 +153,7 @@ export default function SimpleSwipe({ children, currentTab }: SimpleSwipeProps) 
           backgroundColor: getDestinationColor(),
           opacity: translateX.interpolate({
             inputRange: currentTab === 'home' ? [-SCREEN_WIDTH, -20, 0] : [0, 20, SCREEN_WIDTH],
-            outputRange: currentTab === 'home' ? [0.7, 0, 0] : [0, 0, 0.7],
+            outputRange: currentTab === 'home' ? [1, 0, 0] : [0, 0, 1],
             extrapolate: 'clamp',
           }),
         }}
