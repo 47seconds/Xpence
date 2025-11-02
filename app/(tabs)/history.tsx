@@ -13,7 +13,7 @@ import { ArrowUpCircle, ArrowDownCircle, Trash2 } from 'lucide-react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { storage, Transaction } from '@/lib/storage';
 import { useTheme } from '@/hooks/useTheme';
-import SwipeWrapper from '@/components/SwipeWrapper';
+import SimpleSwipe from '@/components/SimpleSwipe';
 
 export default function HistoryTab() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -149,7 +149,7 @@ export default function HistoryTab() {
   }
 
   return (
-    <SwipeWrapper currentTab="history">
+    <SimpleSwipe currentTab="history">
       <View style={[styles.container, isDarkTheme && styles.containerDark]}>
         <View style={[styles.header, isDarkTheme && styles.headerDark]}>
           <Text style={[styles.title, isDarkTheme && styles.titleDark]}>Transaction History</Text>
@@ -174,7 +174,7 @@ export default function HistoryTab() {
           />
         )}
       </View>
-    </SwipeWrapper>
+    </SimpleSwipe>
   );
 }
 

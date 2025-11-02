@@ -15,7 +15,7 @@ import { Plus, TrendingUp, TrendingDown, Moon, Sun } from 'lucide-react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { storage, Transaction } from '@/lib/storage';
 import { useTheme } from '@/hooks/useTheme';
-import SwipeWrapper from '@/components/SwipeWrapper';
+import SimpleSwipe from '@/components/SimpleSwipe';
 
 const { width, height } = Dimensions.get('window');
 
@@ -110,7 +110,7 @@ export default function HomeTab() {
   }
 
   return (
-    <SwipeWrapper currentTab="home">
+    <SimpleSwipe currentTab="home">
       <ScrollView style={[styles.container, isDarkTheme && styles.containerDark]} contentContainerStyle={styles.scrollContent}>
         {/* Background Gradient Effect */}
         <View style={styles.backgroundGradient} />
@@ -255,8 +255,8 @@ export default function HomeTab() {
           </View>
         </View>
       </Modal>
-    </ScrollView>
-    </SwipeWrapper>
+      </ScrollView>
+    </SimpleSwipe>
   );
 }
 
