@@ -274,6 +274,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 32,
     letterSpacing: 0.5,
+    fontFamily: 'serif',
+    fontStyle: 'italic',
   },
   balanceCard: {
     backgroundColor: '#ffffff',
@@ -298,12 +300,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 0.5,
     textAlign: 'center',
+    fontFamily: 'monospace',
   },
   balanceAmount: {
     fontSize: 48,
     fontWeight: '800',
     letterSpacing: -1,
     textAlign: 'center',
+    fontFamily: 'monospace',
   },
   positive: {
     color: '#10b981',
@@ -365,11 +369,13 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1f2937',
     marginBottom: 8,
+    fontFamily: 'sans-serif',
   },
   modalSubtitle: {
     fontSize: 16,
     color: '#6b7280',
     fontWeight: '500',
+    fontFamily: 'sans-serif',
   },
   typeContainer: {
     flexDirection: 'row',
